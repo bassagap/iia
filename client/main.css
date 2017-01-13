@@ -18,8 +18,8 @@ body {
 }
  
 .container {
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 2600px;
+  margin: 10 auto;
   min-height: 100%;
   background: white;
 }
@@ -37,10 +37,24 @@ header {
  
 h1 {
   font-size: 1.5em;
-  margin: 0;
+  margin: 10;
   margin-bottom: 10px;
   display: inline-block;
-  margin-right: 1em;
+  margin-right: 10em;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin: 10;
+  margin-bottom: 10px;
+  display: inline-block;
+  margin-right: 10em;
+  margin: 10;
+  padding: 15;
+  background: white;
+  border-style: outset;
+  border-color: #00008B
+
 }
  
 form {
@@ -51,7 +65,7 @@ form {
  
 .new-task input {
   box-sizing: border-box;
-  padding: 10px 0;
+  padding: 15px 0;
   background: transparent;
   border: none;
   width: 100%;
@@ -64,11 +78,11 @@ form {
 }
  
 ul {
-  margin: 0;
-  padding: 0;
+  margin: 10;
+  padding: 5;
   background: white;
 }
- 
+
 .delete {
   float: right;
   font-weight: bold;
@@ -77,42 +91,46 @@ ul {
   border: none;
   position: relative;
 }
- 
+
 li {
   position: relative;
   list-style: none;
   padding: 15px;
-  border-bottom: #eee solid 1px;
+  border-bottom: #eee solid 5px;
 }
  
 li .text {
   margin-left: 10px;
 }
  
+li.textToCopy{
+    background:   #DCDCDC
+    border-style: inset;
+    border-color: #00008B
+
+ }
 li.checked {
-  color: #888;
+    background: #F5F5F5;
+    border-style: groove;
+    border-color: #00008B
 }
  
 li.checked .text {
-  text-decoration: line-through;
+  font-weight: bold;
 }
- 
-li.private {
-  background: #eee;
-  border-color: #ddd;
-}
+
  
 header .hide-completed {
   float: right;
 }
  
 .toggle-private {
-  margin-left: 5px;
+  margin-left: 10px;
 }
  
 @media (max-width: 600px) {
   li {
-    padding: 12px 15px;
+    padding: 15px 15px;
   }
  
   .search {
@@ -121,6 +139,12 @@ header .hide-completed {
   }
  
   .new-task input {
-    padding-bottom: 5px;
+    padding-bottom: 15px;
   }
+table td {
+    width: 30px;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
+}
 }

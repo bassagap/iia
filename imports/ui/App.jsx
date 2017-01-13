@@ -2,10 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
-
 import { Tasks } from '../api/tasks.js';
-
 import Task from './Task.jsx';
+import { Developments } from '../api/developments.js';
+
+import Development from './Development.jsx';
 import AccountsUIWrapper from './AccountsUIWrapper.jsx';
 
 // App component - represents the whole app
@@ -18,7 +19,7 @@ class App extends Component {
     };
   }
 
-  handleSubmit(event) {
+  handleSubmitTesting(event) {
     event.preventDefault();
 
     // Find the text field via the React ref
@@ -29,6 +30,17 @@ class App extends Component {
     // Clear form
     ReactDOM.findDOMNode(this.refs.textInput).value = '';
   }
+  handleSubmitDevelopment(event) {
+    event.preventDefault();
+
+    // Find the text field via the React ref
+    const text = ReactDOM.findDOMNode(this.refs.textInput1).value.trim();
+
+    Meteor.call('developments.insert', text);
+
+    // Clear form
+    ReactDOM.findDOMNode(this.refs.textInput1).value = '';
+  }
 
   toggleHideCompleted() {
     this.setState({
@@ -38,21 +50,58 @@ class App extends Component {
 
   renderTasks() {
     let filteredTasks = this.props.tasks;
-    if (this.state.hideCompleted) {
-      filteredTasks = filteredTasks.filter(task => !task.checked);
-    }
     return filteredTasks.map((task) => {
       const currentUserId = this.props.currentUser && this.props.currentUser._id;
-      const showPrivateButton = task.owner === currentUserId;
- 
       return (
         <Task
           key={task._id}
           task={task}
-          showPrivateButton={showPrivateButton}
         />
       );
     });
+  }
+  renderDevelopments() {
+    let filteredDevelopments = this.props.developments;
+
+    return filteredDevelopments.map((development) => {
+      const currentUserId = this.props.currentUser && this.props.currentUser._id;  
+      return (
+        <Development
+          key={development._id}
+          development={development}
+          
+        />
+      );
+    });
+  }
+
+  renderCopyTesting(){
+    let filteredTasks = this.props.tasks;
+    if (this.state.hideCompleted) {
+     filteredTasks = filteredTasks.filter(task => task.checked);
+      return filteredTasks.map((task) => {  
+      return (
+        <Task
+          task={task}
+        />
+      );
+    });
+    }
+    return null;
+  }
+    renderCopyDevelopment(){
+    let filteredDevelopments = this.props.developments;
+    if (this.state.hideCompleted) {
+     filteredDevelopments = filteredDevelopments.filter(development => development.checked);
+      return filteredDevelopments.map((development) => {  
+      return (
+        <Development
+          development={development}
+        />
+      );
+    });
+    }
+    return null;
   }
 
   render() {
@@ -70,29 +119,55 @@ class App extends Component {
               checked={this.state.hideCompleted}
               onClick={this.toggleHideCompleted.bind(this)}
             />
-            Hide Completed Tasks
+            Generate
           </label>
 
           <AccountsUIWrapper />
         </header>
+        <table>
+        <tr>
+        <td>
+          <ul>
+            {this.renderTasks()}
+          </ul>
+        </td>
 
+        <td>
+          <ul>
+           {this.renderDevelopments()}
+          </ul>
+        </td>
+        </tr>
+        </table>
         <ul>
-          {this.renderTasks()}
-        </ul>
-        <ul>
-        Message to be copied: <br/>
-        rationale for product risk ({this.props.currentUser ? <span> {this.props.currentUser.username}</span> : ''}) : 
+        
+        <h2> Message to be copied:  </h2> <br/>
+        
+        Rationale for product risk ({this.props.currentUser ? <span> {this.props.currentUser.username}</span> : ''}) : 
+          {this.renderCopyTesting()}
+        Rationale for business risk ({this.props.currentUser ? <span> {this.props.currentUser.username}</span> : ''}) : 
+          {this.renderCopyDevelopment()}
            { this.props.currentUser ?
-            <form className="new-task" onSubmit={this.handleSubmit.bind(this)} >
+            <form className="new-task" onSubmit={this.handleSubmitTesting.bind(this)} >
               <input
                 type="text"
                 ref="textInput"
-                placeholder="Type to add new tasks"
+                placeholder="Type to add new product risk"
+              />
+            </form> : ''}
+            </ul>
+            <ul>
+            { this.props.currentUser ?
+            <form className="new-task" onSubmit={this.handleSubmitDevelopment.bind(this)} >
+              <input
+                type="text"
+                ref="textInput1"
+                placeholder="Type to add new development risk"
               />
             </form> : ''
           }
+             
         </ul>
-
       </div>
     );
   }
@@ -100,15 +175,20 @@ class App extends Component {
 
 App.propTypes = {
   tasks: PropTypes.array.isRequired,
-  incompleteCount: PropTypes.number.isRequired,
+  developments : PropTypes.array.isRequired,
+  incompleteCount: PropTypes.object,
   currentUser: PropTypes.object,
+  textToCopy : PropTypes.string,
 };
 
 export default createContainer(() => {
-  Meteor.subscribe('tasks');
+  Meteor.subscribe('developments');
+   Meteor.subscribe('tasks');
   return {
+    developments: Developments.find({}, { sort: { createdAt: -1 } }).fetch(),
     tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
-    incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
+    incompleteCount: Tasks.find({ checked: { $ne: true } }),
     currentUser: Meteor.user(),
   };
+
 }, App);
