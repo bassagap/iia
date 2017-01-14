@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Tasks } from '../api/tasks.js';
@@ -18,7 +18,8 @@ class App extends Component {
       hideCompleted: false,
       value: 'bassagap',
       testerID : 'bassagap',
-      developmentID : 'sioranm2'
+      developmentID : 'sioranm2',
+      copied : false,
     };
     
   }
@@ -28,10 +29,16 @@ class App extends Component {
   }
 
   handleChangeDevelopment(event) {
+
     this.setState({value: event.target.value});
-    this.setState({developmentID: event.target.value})
+    this.setState({developmentID: event.target.value});
   }
 
+  handleChange(event) {
+    this.setState({value: event.target.value,
+                   copied: false,
+                   textToCopy: event.target.value});
+  }
   handleSubmitTesting(event) {
     event.preventDefault();
 
@@ -55,25 +62,15 @@ class App extends Component {
     ReactDOM.findDOMNode(this.refs.textInput1).value = '';
   }
 
-  handleSubmitTesterID(event) {
-    event.preventDefault();
-    debugger;
-    // Find the text field via the React ref
-    const text = ReactDOM.findDOMNode(this.refs.textInput2).value.trim();
-    Meteor.call('usersid.insert', text);
-    console.log("Insert method passed");
-  }
-
-  handleSubmitDeveloperID(event) {
-    event.preventDefault();
-
-    // Find the text field via the React ref
-    const text = ReactDOM.findDOMNode(this.refs.textInput3).value.trim();
-  }
   toggleHideCompleted() {
     this.setState({
       hideCompleted: !this.state.hideCompleted,
     });
+  }
+
+
+  onCopy() {
+    this.setState({copied: true});
   }
 
   renderTasks() {
@@ -89,21 +86,20 @@ class App extends Component {
     });
   }
 
-    
 
   renderCopyTesting(){
+
     let filteredTasks = this.props.tasks;
     if (this.state.hideCompleted) {
      filteredTasks = filteredTasks.filter(task => task.checked);
       return filteredTasks.map((task) => {  
-      return (
-        <Task
-          task={task}
-        />
+      return (      
+      "Rationale for product risk ( " + this.state.testerID + ") : " +  task.text  + "\n"    
       );
+
     });
     }
-    return null;
+    return "void";
   }
   renderCopyDevelopment(){
     let filteredDevelopments = this.props.developments;
@@ -111,13 +107,11 @@ class App extends Component {
      filteredDevelopments = filteredDevelopments.filter(development => development.checked);
       return filteredDevelopments.map((development) => {  
       return (
-        <Development
-          development={development}
-        />
+       "Rationale for development risk (" + this.state.developmentID + ") : " + development.text + "\n"      
       );
     });
     }
-    return null;
+    return "void";
   }
 
   render() {
@@ -156,10 +150,15 @@ class App extends Component {
           </ul>
         <ul>
           <h2> Message to be copied:  </h2> <br/>
-          Rationale for product risk ({this.state.testerID}) : 
-            {this.renderCopyTesting()}
-          Rationale for development risk ({this.state.developmentID}) : 
-            {this.renderCopyDevelopment()} 
+         {this.renderCopyTesting()} <br/>
+         {this.renderCopyDevelopment()} <br/>  
+
+        <CopyToClipboard text={this.renderCopyTesting().concat(this.renderCopyDevelopment())}  onCopy={this.onCopy.bind(this)}>
+        <button>Copy to clipboard</button>
+        </CopyToClipboard>&nbsp; 
+
+        {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}   
+        
             <form className="new-task" onSubmit={this.handleSubmitTesting.bind(this)} >
               <input
                 type="text"
@@ -175,8 +174,8 @@ class App extends Component {
                 ref="textInput1"
                 placeholder="Type to add new development risk"
               />
-            </form>       
-        </ul>
+            </form>  
+          </ul>
       </div>
     );
   }
