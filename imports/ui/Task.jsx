@@ -17,13 +17,9 @@ export default class Task extends Component {
   render() {
     // Give tasks a different className when they are checked off,
     // so that we can style them nicely in CSS
-        const taskClassName = classnames({
-      checked: this.props.task.checked,
-    
-    });
-
+  
     return (
-      <li className={taskClassName}>
+      <li className={this.props.task.risk.concat(this.props.task.checked)}>
         <button className="delete" onClick={this.deleteThisTask.bind(this)}>
           &times;
         </button>

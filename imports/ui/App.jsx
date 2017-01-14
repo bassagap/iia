@@ -1,10 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Tasks } from '../api/tasks.js';
-import Task from './Task.jsx';
 import { Developments } from '../api/developments.js';
+
+import Task from './Task.jsx';
 import Development from './Development.jsx';
 
 // App component - represents the whole app
@@ -14,7 +16,20 @@ class App extends Component {
 
     this.state = {
       hideCompleted: false,
+      value: 'bassagap',
+      testerID : 'bassagap',
+      developmentID : 'sioranm2'
     };
+    
+  }
+  handleChangeTester(event) {
+    this.setState({value: event.target.value}); 
+    this.setState({testerID: event.target.value})
+  }
+
+  handleChangeDevelopment(event) {
+    this.setState({value: event.target.value});
+    this.setState({developmentID: event.target.value})
   }
 
   handleSubmitTesting(event) {
@@ -34,7 +49,6 @@ class App extends Component {
 
     // Find the text field via the React ref
     const text = ReactDOM.findDOMNode(this.refs.textInput1).value.trim();
-
     Meteor.call('developments.insert', text);
 
     // Clear form
@@ -43,8 +57,11 @@ class App extends Component {
 
   handleSubmitTesterID(event) {
     event.preventDefault();
+    debugger;
     // Find the text field via the React ref
     const text = ReactDOM.findDOMNode(this.refs.textInput2).value.trim();
+    Meteor.call('usersid.insert', text);
+    console.log("Insert method passed");
   }
 
   handleSubmitDeveloperID(event) {
@@ -61,6 +78,7 @@ class App extends Component {
 
   renderTasks() {
     let filteredTasks = this.props.tasks;
+
     return filteredTasks.map((task) => {
       return (
         <Task
@@ -71,6 +89,7 @@ class App extends Component {
     });
   }
 
+    
   renderDevelopments() {
     let filteredDevelopments = this.props.developments;
 
@@ -136,27 +155,29 @@ class App extends Component {
         <tr>
         <td>
           <ul>
-           <form className="new-task" onSubmit={this.handleSubmitTesterID.bind(this)} >
-              <input
-                type="text"
-                ref="textInput2"
-                placeholder="Tester ID"
-              />
-            </form> 
-          
+           <label>
+            Tester ID:
+              <select value={this.state.value} onChange={this.handleChangeTester.bind(this)}>
+                <option value="bassagap">bassagap</option>
+                <option value="lopezpef">lopezpef</option>
+                <option value="mateocad">mateocad</option>
+                <option value="gutierp6">gutierp6</option>
+              </select>
+          </label>          
             {this.renderTasks()}
           </ul>
         </td>
 
         <td>
           <ul>
-            <form className="new-task" onSubmit={this.handleSubmitDeveloperID.bind(this)} >
-              <input
-                type="text"
-                ref="textInput3"
-                placeholder="Development ID"
-              />
-            </form> 
+           <label>
+            Development ID:
+              <select value={this.state.value} onChange={this.handleChangeDevelopment.bind(this)}>
+                <option value="sorianm2">sorianm2</option>
+                <option value="nunezm">nunezm</option>
+                <option value="sendrose">sendrose</option>
+              </select>
+          </label> 
            {this.renderDevelopments()}
           </ul>
         </td>
@@ -164,9 +185,9 @@ class App extends Component {
         </table>
         <ul>
           <h2> Message to be copied:  </h2> <br/>
-          Rationale for product risk () : 
+          Rationale for product risk ({this.state.testerID}) : 
             {this.renderCopyTesting()}
-          Rationale for business risk () : 
+          Rationale for development risk ({this.state.developmentID}) : 
             {this.renderCopyDevelopment()} 
             <form className="new-task" onSubmit={this.handleSubmitTesting.bind(this)} >
               <input
@@ -198,10 +219,11 @@ App.propTypes = {
 
 export default createContainer(() => {
   Meteor.subscribe('developments');
-   Meteor.subscribe('tasks');
+  Meteor.subscribe('tasks');
+  Meteor.subscribe('usersid');
   return {
-    developments: Developments.find({}, { sort: { createdAt: -1 } }).fetch(),
-    tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
+    developments: Developments.find({}, { sort: { risk: -1 } }).fetch(),
+    tasks: Tasks.find({}, { sort: { risk: -1 } }).fetch()
   };
 
 }, App)

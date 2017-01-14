@@ -16,7 +16,8 @@ Meteor.methods({
     check(text, String);
     Developments.insert({
       text,
-      createdAt: new Date()
+      createdAt: new Date(),
+      checked : "false"
     });
   },
   'developments.remove'(developmentId) {

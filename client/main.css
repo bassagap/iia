@@ -14,7 +14,7 @@ body {
   padding: 0;
   margin: 0;
  
-  font-size: 14px;
+  font-size: 17px;
 }
  
 .container {
@@ -36,7 +36,7 @@ header {
 }
  
 h1 {
-  font-size: 1.5em;
+  font-size: 2em;
   margin: 10;
   margin-bottom: 10px;
   display: inline-block;
@@ -70,7 +70,7 @@ form {
   border: none;
   width: 100%;
   padding-right: 80px;
-  font-size: 1em;
+  font-size: 1.5em;
 }
  
 .new-task input:focus{
@@ -97,6 +97,8 @@ li {
   list-style: none;
   padding: 15px;
   border-bottom: #eee solid 5px;
+  background:  #8FBC8F; 
+  font-size: 24px;
 }
  
 li .text {
@@ -109,17 +111,57 @@ li.textToCopy{
     border-color: #00008B
 
  }
-li.checked {
-    background: #F5F5F5;
+ li.checked{
+    background: #2E8B57;
     border-style: groove;
     border-color: #00008B
+}
+li.ltrue{
+    background: #2E8B57;
+    border-style: groove;
+    border-color: #00008B
+}
+
+li.mtrue{
+    background: #FFFF00;
+    border-style: groove;
+    border-color: #00008B
+}
+li.htrue{
+    background: #FF0000;
+    border-style: groove;
+    border-color: #00008B
+}
+li.lfalse{
+    background: #90EE90;
+}
+
+li.mfalse{
+    background: #FFFACD;
+
+}
+li.hfalse{
+    background: #FFC0CB;
 }
  
 li.checked .text {
   font-weight: bold;
+  font-size: 24px;
 }
 
- 
+ li.htrue .text {
+  font-weight: bold;
+  font-size: 24px;
+}
+li.mtrue .text {
+  font-weight: bold;
+  font-size: 24px;
+}
+li.ltrue .text {
+  font-weight: bold;
+  font-size: 24px;
+}
+
 header .hide-completed {
   float: right;
 }
@@ -141,45 +183,4 @@ header .hide-completed {
   .new-task input {
     padding-bottom: 15px;
   }
-table td {
-    width: 30px;
-    overflow: hidden;
-    display: inline-block;
-    white-space: nowrap;
-}
-.TabbedArea {
-  margin: 30px auto;
-  width: 80%;
-  font-family: sans-serif;
-  color: #555;
-  font-size: 14px;
-  line-height: 24px;
-}
-.Tab li {
-  float: left;
-  width: 20%;
-}
-.Tab a {
-  display: block;
-  text-align: center;
-  text-decoration: none;
-  text-transform: uppercase;
-  color: #888;
-  padding: 10px 0;
-  border-bottom: 2px solid #888;
-  background: #f7f7f7;
-}
-.Tab a:hover,
-.Tab a.active {
-  background: #ddd;
-}
-.TabPane {
-  padding: 30px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-}
-.clearfix:after {
-  content: "";
-  display: table;
-  clear: both;
-}
 }

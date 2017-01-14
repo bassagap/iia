@@ -17,13 +17,9 @@ export default class Development extends Component {
   render() {
     // Give developments a different className when they are checked off,
     // so that we can style them nicely in CSS
-        const developmentClassName = classnames({
-      checked: this.props.development.checked,
-  
-    });
 
     return (
-      <li className={developmentClassName}>
+      <li className= {this.props.development.risk.concat(this.props.development.checked)}>
         <button className="delete" onClick={this.deleteThisDevelopment.bind(this)}>
           &times;
         </button>
@@ -35,7 +31,6 @@ export default class Development extends Component {
           onClick={this.toggleChecked.bind(this)}
         />
         
-
         <span className="text">
           {this.props.development.text}
         </span>
