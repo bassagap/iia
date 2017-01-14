@@ -10,7 +10,7 @@ import Task from './Task.jsx';
 import Development from './Development.jsx';
 
 // App component - represents the whole app
-class App extends Component {
+class Dev_App extends Component {
   constructor(props) {
     super(props);
 
@@ -55,15 +55,6 @@ class App extends Component {
     ReactDOM.findDOMNode(this.refs.textInput1).value = '';
   }
 
-  handleSubmitTesterID(event) {
-    event.preventDefault();
-    debugger;
-    // Find the text field via the React ref
-    const text = ReactDOM.findDOMNode(this.refs.textInput2).value.trim();
-    Meteor.call('usersid.insert', text);
-    console.log("Insert method passed");
-  }
-
   handleSubmitDeveloperID(event) {
     event.preventDefault();
 
@@ -75,21 +66,20 @@ class App extends Component {
       hideCompleted: !this.state.hideCompleted,
     });
   }
+   
+  renderDevelopments() {
+    let filteredDevelopments = this.props.developments;
 
-  renderTasks() {
-    let filteredTasks = this.props.tasks;
-
-    return filteredTasks.map((task) => {
+    return filteredDevelopments.map((development) => {
       return (
-        <Task
-          key={task._id}
-          task={task}
+        <Development
+          key={development._id}
+          development={development}
+          
         />
       );
     });
   }
-
-    
 
   renderCopyTesting(){
     let filteredTasks = this.props.tasks;
@@ -142,18 +132,27 @@ class App extends Component {
           </label>
           </nav>  
         </header>
+        <table>
+        <tr>
+        <td>
+
+        </td>
+
+        <td>
           <ul>
            <label>
-            Tester ID:
-              <select value={this.state.value} onChange={this.handleChangeTester.bind(this)}>
-                <option value="bassagap">bassagap</option>
-                <option value="lopezpef">lopezpef</option>
-                <option value="mateocad">mateocad</option>
-                <option value="gutierp6">gutierp6</option>
+            Development ID:
+              <select value={this.state.value} onChange={this.handleChangeDevelopment.bind(this)}>
+                <option value="sorianm2">sorianm2</option>
+                <option value="nunezm">nunezm</option>
+                <option value="sendrose">sendrose</option>
               </select>
-          </label>          
-            {this.renderTasks()}
+          </label> 
+           {this.renderDevelopments()}
           </ul>
+        </td>
+        </tr>
+        </table>
         <ul>
           <h2> Message to be copied:  </h2> <br/>
           Rationale for product risk ({this.state.testerID}) : 
@@ -182,7 +181,7 @@ class App extends Component {
   }
 }
 
-App.propTypes = {
+Dev_App.propTypes = {
   tasks: PropTypes.array.isRequired,
   developments : PropTypes.array.isRequired,
   textToCopy : PropTypes.string,
@@ -197,7 +196,4 @@ export default createContainer(() => {
     tasks: Tasks.find({}, { sort: { risk: -1 } }).fetch()
   };
 
-}, App)
-
-
-
+}, Dev_App)
