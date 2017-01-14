@@ -5,9 +5,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import { Tasks } from '../api/tasks.js';
 import Task from './Task.jsx';
 import { Developments } from '../api/developments.js';
-
 import Development from './Development.jsx';
-import AccountsUIWrapper from './AccountsUIWrapper.jsx';
 
 // App component - represents the whole app
 class App extends Component {
@@ -30,6 +28,7 @@ class App extends Component {
     // Clear form
     ReactDOM.findDOMNode(this.refs.textInput).value = '';
   }
+
   handleSubmitDevelopment(event) {
     event.preventDefault();
 
@@ -42,6 +41,18 @@ class App extends Component {
     ReactDOM.findDOMNode(this.refs.textInput1).value = '';
   }
 
+  handleSubmitTesterID(event) {
+    event.preventDefault();
+    // Find the text field via the React ref
+    const text = ReactDOM.findDOMNode(this.refs.textInput2).value.trim();
+  }
+
+  handleSubmitDeveloperID(event) {
+    event.preventDefault();
+
+    // Find the text field via the React ref
+    const text = ReactDOM.findDOMNode(this.refs.textInput3).value.trim();
+  }
   toggleHideCompleted() {
     this.setState({
       hideCompleted: !this.state.hideCompleted,
@@ -51,7 +62,6 @@ class App extends Component {
   renderTasks() {
     let filteredTasks = this.props.tasks;
     return filteredTasks.map((task) => {
-      const currentUserId = this.props.currentUser && this.props.currentUser._id;
       return (
         <Task
           key={task._id}
@@ -60,11 +70,11 @@ class App extends Component {
       );
     });
   }
+
   renderDevelopments() {
     let filteredDevelopments = this.props.developments;
 
     return filteredDevelopments.map((development) => {
-      const currentUserId = this.props.currentUser && this.props.currentUser._id;  
       return (
         <Development
           key={development._id}
@@ -89,7 +99,7 @@ class App extends Component {
     }
     return null;
   }
-    renderCopyDevelopment(){
+  renderCopyDevelopment(){
     let filteredDevelopments = this.props.developments;
     if (this.state.hideCompleted) {
      filteredDevelopments = filteredDevelopments.filter(development => development.checked);
@@ -106,11 +116,11 @@ class App extends Component {
 
   render() {
     return (
-      <div className="container">
+ <div className="container">
         <header>
           <h1>INTERNAL ISUES ASSESSMENT </h1>
-          </header>
-          <header>
+        </header>
+        <header>
           <h1> Testing </h1>
           <label className="hide-completed">
             <input
@@ -121,52 +131,59 @@ class App extends Component {
             />
             Generate
           </label>
-
-          <AccountsUIWrapper />
         </header>
         <table>
         <tr>
         <td>
           <ul>
+           <form className="new-task" onSubmit={this.handleSubmitTesterID.bind(this)} >
+              <input
+                type="text"
+                ref="textInput2"
+                placeholder="Tester ID"
+              />
+            </form> 
+          
             {this.renderTasks()}
           </ul>
         </td>
 
         <td>
           <ul>
+            <form className="new-task" onSubmit={this.handleSubmitDeveloperID.bind(this)} >
+              <input
+                type="text"
+                ref="textInput3"
+                placeholder="Development ID"
+              />
+            </form> 
            {this.renderDevelopments()}
           </ul>
         </td>
         </tr>
         </table>
         <ul>
-        
-        <h2> Message to be copied:  </h2> <br/>
-        
-        Rationale for product risk ({this.props.currentUser ? <span> {this.props.currentUser.username}</span> : ''}) : 
-          {this.renderCopyTesting()}
-        Rationale for business risk ({this.props.currentUser ? <span> {this.props.currentUser.username}</span> : ''}) : 
-          {this.renderCopyDevelopment()}
-           { this.props.currentUser ?
+          <h2> Message to be copied:  </h2> <br/>
+          Rationale for product risk () : 
+            {this.renderCopyTesting()}
+          Rationale for business risk () : 
+            {this.renderCopyDevelopment()} 
             <form className="new-task" onSubmit={this.handleSubmitTesting.bind(this)} >
               <input
                 type="text"
                 ref="textInput"
                 placeholder="Type to add new product risk"
               />
-            </form> : ''}
+            </form> 
             </ul>
             <ul>
-            { this.props.currentUser ?
             <form className="new-task" onSubmit={this.handleSubmitDevelopment.bind(this)} >
               <input
                 type="text"
                 ref="textInput1"
                 placeholder="Type to add new development risk"
               />
-            </form> : ''
-          }
-             
+            </form>       
         </ul>
       </div>
     );
@@ -176,8 +193,6 @@ class App extends Component {
 App.propTypes = {
   tasks: PropTypes.array.isRequired,
   developments : PropTypes.array.isRequired,
-  incompleteCount: PropTypes.object,
-  currentUser: PropTypes.object,
   textToCopy : PropTypes.string,
 };
 
@@ -187,8 +202,9 @@ export default createContainer(() => {
   return {
     developments: Developments.find({}, { sort: { createdAt: -1 } }).fetch(),
     tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
-    incompleteCount: Tasks.find({ checked: { $ne: true } }),
-    currentUser: Meteor.user(),
   };
 
-}, App);
+}, App)
+
+
+
