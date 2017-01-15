@@ -1,61 +1,34 @@
 /* CSS declarations go here */
 body {
-  font-family: sans-serif;
-  background-color: #315481;
-  background-image: linear-gradient(to bottom, #315481, #918e82 100%);
-  background-attachment: fixed;
- 
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
- 
-  padding: 0;
-  margin: 0;
- 
-  font-size: 17px;
+
+  background-color: #EEE;
+  font-family: 'Open Sans', sans-serif
+  padding: 70px 70px 150px;
 }
  
 .container {
-  max-width: 2600px;
-  margin: 100 auto;
-  min-height: 100%;
+  width: 100%;
+  min-height: 120%;
   background: white;
 }
  
-header {
-  background: #d2edf4;
-  background-image: linear-gradient(to bottom, #d0edf5, #e1e5f0 100%);
-  padding: 20px 15px 15px 15px;
-  position: relative;
-}
- 
-#login-buttons {
-  display: block;
-}
+
  
 h1 {
   font-size: 2em;
   margin: 10;
   margin-bottom: 10px;
   display: inline-block;
-  margin-right: 10em;
+  margin-left: 40px;
 }
-
-h2 {
-  font-size: 1.5em;
+h3{
+  font-size: 1em;
   margin: 10;
   margin-bottom: 10px;
   display: inline-block;
-  margin-right: 10em;
-  margin: 10;
-  padding: 15;
-  background: white;
-  border-style: outset;
-  border-color: #00008B
-
+  margin-left: 600px;
 }
+
  
 form {
   margin-top: 10px;
@@ -99,6 +72,11 @@ li {
   border-bottom: #eee solid 5px;
   background:  #8FBC8F; 
   font-size: 24px;
+  margin-right: 40px;
+}
+ul li :hover{
+  font-size: 30px;
+  font-weight: bold;
 }
  
 li .text {
@@ -118,6 +96,11 @@ li.textToCopy{
 }
 li.ltrue{
     background: #2E8B57;
+    border-style: groove;
+    border-color: #00008B
+}
+ul li.ltrue :hover{
+    background: #555
     border-style: groove;
     border-color: #00008B
 }
@@ -162,13 +145,12 @@ li.ltrue .text {
   font-size: 24px;
 }
 
-header .hide-completed {
+label .hide-completed {
   float: right;
+  margin-left: 5000px;
+  position: relative;
 }
  
-.toggle-private {
-  margin-left: 10px;
-}
  
 @media (max-width: 600px) {
   li {

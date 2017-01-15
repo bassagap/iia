@@ -23,3 +23,5 @@ accounts-ui
 accounts-password
 aslagle:reactive-table
 kadira:flow-router
+
+mquandalle:stylus

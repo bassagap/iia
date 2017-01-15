@@ -12,7 +12,7 @@ import Development from './Development.jsx';
 import Business from './Business.jsx';
 
 // App component - represents the whole app
-class App extends Component {
+class Ba_App extends Component {
   constructor(props) {
     super(props);
 
@@ -21,7 +21,8 @@ class App extends Component {
       value: 'bassagap',
       testerID : 'bassagap',
       developmentID : 'sioranm2',
-      copied : false,
+      businessID : 'sioranm2',
+      copied : false
     };
     
   }
@@ -32,13 +33,15 @@ class App extends Component {
 
   handleChangeDevelopment(event) {
     this.setState({value: event.target.value});
-    this.setState({developmentID: event.target.value});
+    this.setState({developmentID: event.target.value})
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value,
-                   copied: false,
-                   textToCopy: event.target.value});
+    handleChangeBusiness(event) {
+    this.setState({value: event.target.value});
+    this.setState({businessID: event.target.value})
+  }
+  onCopy() {
+    this.setState({copied: true});
   }
 
   toggleHideCompleted() {
@@ -46,25 +49,22 @@ class App extends Component {
       hideCompleted: !this.state.hideCompleted,
     });
   }
+   
+  renderBusinesses() {
+    let filteredBusinesses = this.props.businesses;
 
-  onCopy() {
-    this.setState({copied: true});
-  }
-
-  renderTasks() {
-    let filteredTasks = this.props.tasks;
-    return filteredTasks.map((task) => {
+    return filteredBusinesses.map((business) => {
       return (
-        <Task
-          key={task._id}
-          task={task}
+        <Business
+          key={business._id}
+          business={business}
+          
         />
       );
     });
   }
 
   renderCopyTesting(){
-
     let filteredTasks = this.props.tasks;
     if (this.state.hideCompleted) {
      filteredTasks = filteredTasks.filter(task => task.checked);
@@ -81,8 +81,9 @@ class App extends Component {
   renderCopyDevelopment(){
     let filteredDevelopments = this.props.developments;
     if (this.state.hideCompleted) {
+
      filteredDevelopments = filteredDevelopments.filter(development => development.checked);
-      return filteredDevelopments.map((development) => {  
+     return filteredDevelopments.map((development) => {  
       return (
        "Rationale for development risk (" + this.state.developmentID + ") : " + development.text + "\n"      
       );
@@ -90,7 +91,7 @@ class App extends Component {
     }
     return "void";
   }
-    renderCopyBusiness(){
+  renderCopyBusiness(){
     let filteredBusinesses = this.props.businesses;
     if (this.state.hideCompleted) {
      filteredBusinesses = filteredBusinesses.filter(business => business.checked);
@@ -105,7 +106,7 @@ class App extends Component {
 
   render() {
     return (
-      <ReactCSSTransitionGroup
+    <ReactCSSTransitionGroup
           component ="div"
           className ="container"
            transitionName = "route"
@@ -113,10 +114,10 @@ class App extends Component {
            transitionAppearTimeOut = {600}
            transitionLeaveTimeOut = {400}
            transitionAppear ={true}>
+              
+          <h1> Business </h1>
            
-          <h1> Testing 
-           <h3>
-            <label className="hide-completed" >
+            <label className="hide-completed">
               <input
                 type="checkbox"
                 readOnly
@@ -124,45 +125,40 @@ class App extends Component {
                 onClick={this.toggleHideCompleted.bind(this)}
               />
             Generate
-            </label> 
-            </h3>
+
             <CopyToClipboard text={this.renderCopyTesting().concat(this.renderCopyDevelopment()).concat(this.renderCopyBusiness())}  onCopy={this.onCopy.bind(this)}>
             <button>Copy to clipboard</button>
             </CopyToClipboard>&nbsp; 
-             
-          
-            </h1>                  
+            </label>                     
           <ul>
            <label>
-            Tester ID: 
-              <select value={this.state.value} onChange={this.handleChangeTester.bind(this)}>
-                <option value="bassagap">bassagap</option>
-                <option value="lopezpef">lopezpef</option>
-                <option value="mateocad">mateocad</option>
-                <option value="gutierp6">gutierp6</option>
+            Business ID:
+              <select value={this.state.value} onChange={this.handleChangeBusiness.bind(this)}>
+                <option value="sorianm2">sorianm2</option>
+                <option value="nunezm">nunezm</option>
+                <option value="sendrose">sendrose</option>
               </select>
-           </label>
+          </label> 
            <ReactCSSTransitionGroup
            transitionName = "resolutionLoad"
            transitionEnterTimeOut = {600}
            transitionLeaveTimeOut = {400}>
-
-            {this.renderTasks()}
-           </ReactCSSTransitionGroup>
+           {this.renderBusinesses()}
+          </ReactCSSTransitionGroup>
           </ul>
-          <ul>
+         <ul>
           <h2> Message to be copied:  </h2> <br/>
             {this.renderCopyTesting()} <br/>
             {this.renderCopyDevelopment()} <br/>  
             {this.renderCopyBusiness()} <br/>  
             {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}    
           </ul>
-    </ReactCSSTransitionGroup>
+      </ReactCSSTransitionGroup>
     );
   }
 }
 
-App.propTypes = {
+Ba_App.propTypes = {
   tasks: PropTypes.array.isRequired,
   developments : PropTypes.array.isRequired,
   businesses : PropTypes.array.isRequired
@@ -174,11 +170,8 @@ export default createContainer(() => {
   Meteor.subscribe('businesses');
   return {
     developments: Developments.find({}, { sort: { risk: -1 } }).fetch(),
-    tasks: Tasks.find({}, { sort: { risk: -2 } }).fetch(),
+    tasks: Tasks.find({}, { sort: { risk: -1 } }).fetch(),
     businesses: Businesses.find({}, { sort: { risk: -1 } }).fetch(),
   };
 
-}, App)
-
-
-
+}, Ba_App)

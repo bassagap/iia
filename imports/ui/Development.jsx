@@ -20,10 +20,6 @@ export default class Development extends Component {
 
     return (
       <li className= {this.props.development.risk.concat(this.props.development.checked)}>
-        <button className="delete" onClick={this.deleteThisDevelopment.bind(this)}>
-          &times;
-        </button>
-
         <input
           type="checkbox"
           readOnly

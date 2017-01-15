@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import { Meteor } from 'meteor/meteor';
 import { Tasks } from '../api/tasks.js';
 import classnames from 'classnames';
@@ -19,11 +20,12 @@ export default class Task extends Component {
     // so that we can style them nicely in CSS
   
     return (
-      <li className={this.props.task.risk.concat(this.props.task.checked)}>
-        <button className="delete" onClick={this.deleteThisTask.bind(this)}>
-          &times;
-        </button>
-
+      <ReactCSSTransitionGroup
+          component ="li"
+          className={this.props.task.risk.concat(this.props.task.checked)}
+           transitionName = "resolutionLoad"
+           transitionEnterTimeOut = {600}
+           transitionLeaveTimeOut = {400}>     
         <input
           type="checkbox"
           readOnly
@@ -35,7 +37,7 @@ export default class Task extends Component {
         <span className="text">
           {this.props.task.text}
         </span>
-      </li>
+      </ReactCSSTransitionGroup>
     );
   }
 }

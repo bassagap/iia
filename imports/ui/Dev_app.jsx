@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ReactDOM from 'react-dom';
-
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Tasks } from '../api/tasks.js';
 import { Developments } from '../api/developments.js';
-
+import { Businesses } from '../api/businesses.js';
 import Task from './Task.jsx';
 import Development from './Development.jsx';
-
+import Business from './Business.jsx';
 // App component - represents the whole app
 class Dev_App extends Component {
   constructor(props) {
@@ -18,7 +19,8 @@ class Dev_App extends Component {
       hideCompleted: false,
       value: 'bassagap',
       testerID : 'bassagap',
-      developmentID : 'sioranm2'
+      developmentID : 'sioranm2',
+      copied : false
     };
     
   }
@@ -31,36 +33,10 @@ class Dev_App extends Component {
     this.setState({value: event.target.value});
     this.setState({developmentID: event.target.value})
   }
-
-  handleSubmitTesting(event) {
-    event.preventDefault();
-
-    // Find the text field via the React ref
-    const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
-
-    Meteor.call('tasks.insert', text);
-
-    // Clear form
-    ReactDOM.findDOMNode(this.refs.textInput).value = '';
+  onCopy() {
+    this.setState({copied: true});
   }
 
-  handleSubmitDevelopment(event) {
-    event.preventDefault();
-
-    // Find the text field via the React ref
-    const text = ReactDOM.findDOMNode(this.refs.textInput1).value.trim();
-    Meteor.call('developments.insert', text);
-
-    // Clear form
-    ReactDOM.findDOMNode(this.refs.textInput1).value = '';
-  }
-
-  handleSubmitDeveloperID(event) {
-    event.preventDefault();
-
-    // Find the text field via the React ref
-    const text = ReactDOM.findDOMNode(this.refs.textInput3).value.trim();
-  }
   toggleHideCompleted() {
     this.setState({
       hideCompleted: !this.state.hideCompleted,
@@ -86,61 +62,68 @@ class Dev_App extends Component {
     if (this.state.hideCompleted) {
      filteredTasks = filteredTasks.filter(task => task.checked);
       return filteredTasks.map((task) => {  
-      return (
-        <Task
-          task={task}
-        />
+      return (      
+      "Rationale for product risk ( " + this.state.testerID + ") : " +  task.text  + "\n"    
       );
+
     });
     }
-    return null;
+    return "void";
   }
+
   renderCopyDevelopment(){
     let filteredDevelopments = this.props.developments;
     if (this.state.hideCompleted) {
      filteredDevelopments = filteredDevelopments.filter(development => development.checked);
-      return filteredDevelopments.map((development) => {  
+     return filteredDevelopments.map((development) => {  
       return (
-        <Development
-          development={development}
-        />
+       "Rationale for development risk (" + this.state.developmentID + ") : " + development.text + "\n"      
       );
     });
     }
-    return null;
+    return "void";
   }
 
+    renderCopyBusiness(){
+    let filteredBusinesses = this.props.businesses;
+    if (this.state.hideCompleted) {
+     filteredBusinesses = filteredBusinesses.filter(business => business.checked);
+     return filteredBusinesses.map((business) => {  
+      return (
+       "Rationale for business risk (" + this.state.businessID + ") : " + business.text + "\n"      
+      );
+    });
+    }
+    return "void";
+  }
   render() {
     return (
- <div className="container">
-        <header>
-          <h1>INTERNAL ISUES ASSESSMENT </h1>
-        </header>
-        <header>
-          <h1> Testing </h1>
-          <nav>
-            <a href = "/">Testing </a>
-            <a href = "/development">Development </a>
+    <ReactCSSTransitionGroup
+          component ="div"
+          className ="container"
+           transitionName = "route"
+           transitionEnterTimeOut = {600}
+           transitionAppearTimeOut = {600}
+           transitionLeaveTimeOut = {400}
+           transitionAppear ={true}>
+              
+          <h1> Development </h1>
+           
             <label className="hide-completed">
-            <input
-              type="checkbox"
-              readOnly
-              checked={this.state.hideCompleted}
-              onClick={this.toggleHideCompleted.bind(this)}
-            />
+              <input
+                type="checkbox"
+                readOnly
+                checked={this.state.hideCompleted}
+                onClick={this.toggleHideCompleted.bind(this)}
+              />
             Generate
-          </label>
-          </nav>  
-        </header>
-        <table>
-        <tr>
-        <td>
 
-        </td>
-
-        <td>
+            <CopyToClipboard text={this.renderCopyTesting().concat(this.renderCopyDevelopment()).concat(this.renderCopyBusiness())}  onCopy={this.onCopy.bind(this)}>
+            <button>Copy to clipboard</button>
+            </CopyToClipboard>&nbsp; 
+            </label>                    
           <ul>
-           <label>
+          <label>
             Development ID:
               <select value={this.state.value} onChange={this.handleChangeDevelopment.bind(this)}>
                 <option value="sorianm2">sorianm2</option>
@@ -148,52 +131,37 @@ class Dev_App extends Component {
                 <option value="sendrose">sendrose</option>
               </select>
           </label> 
-           {this.renderDevelopments()}
+           <ReactCSSTransitionGroup
+           transitionName = "resolutionLoad"
+           transitionEnterTimeOut = {600}
+           transitionLeaveTimeOut = {400}>
+
+            {this.renderDevelopments()}
+           </ReactCSSTransitionGroup>
           </ul>
-        </td>
-        </tr>
-        </table>
-        <ul>
+          <ul>
           <h2> Message to be copied:  </h2> <br/>
-          Rationale for product risk ({this.state.testerID}) : 
-            {this.renderCopyTesting()}
-          Rationale for development risk ({this.state.developmentID}) : 
-            {this.renderCopyDevelopment()} 
-            <form className="new-task" onSubmit={this.handleSubmitTesting.bind(this)} >
-              <input
-                type="text"
-                ref="textInput"
-                placeholder="Type to add new product risk"
-              />
-            </form> 
-            </ul>
-            <ul>
-            <form className="new-task" onSubmit={this.handleSubmitDevelopment.bind(this)} >
-              <input
-                type="text"
-                ref="textInput1"
-                placeholder="Type to add new development risk"
-              />
-            </form>       
-        </ul>
-      </div>
+            {this.renderCopyTesting()} <br/>
+            {this.renderCopyDevelopment()} <br/>  
+            {this.renderCopyBusiness()} <br/>  
+            {this.state.copied ? <span style={{color: 'red'}}>Copied.</span> : null}    
+          </ul>
+    </ReactCSSTransitionGroup>
     );
   }
 }
 
 Dev_App.propTypes = {
   tasks: PropTypes.array.isRequired,
-  developments : PropTypes.array.isRequired,
-  textToCopy : PropTypes.string,
+  developments : PropTypes.array.isRequired
 };
 
 export default createContainer(() => {
   Meteor.subscribe('developments');
   Meteor.subscribe('tasks');
-  Meteor.subscribe('usersid');
   return {
     developments: Developments.find({}, { sort: { risk: -1 } }).fetch(),
-    tasks: Tasks.find({}, { sort: { risk: -1 } }).fetch()
+    tasks: Tasks.find({}, { sort: { risk: -2} }).fetch()
   };
 
 }, Dev_App)
